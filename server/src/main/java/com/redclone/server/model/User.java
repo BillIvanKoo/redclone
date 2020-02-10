@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(callSuper=false)
 @Entity
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password", "posts", "votes"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "posts", "votes"})
 public class User extends AuditModel {
     private static final long serialVersionUID = -5343371047521510102L;
 
@@ -22,6 +22,7 @@ public class User extends AuditModel {
 
     @Column(unique=true)
     private String username;
+    
     private String password;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
