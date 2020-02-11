@@ -49,3 +49,4 @@ The server will be run at localhost:8080
   - Pageable Support https://stackoverflow.com/questions/55448188/spring-boot-pagination-mockito-repository-findallpageable-returns-null
   - Using JWT in tests https://stackoverflow.com/questions/45241566/spring-boot-unit-tests-with-jwt-token-security
   - Mockito Captor https://www.javainuse.com/spring/spring-boot-argumentcaptor
+- React Project Structure: https://medium.com/@Charles_Stover/optimal-file-structure-for-react-applications-f3e35ad0a145
