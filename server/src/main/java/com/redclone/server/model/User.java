@@ -5,7 +5,9 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Set;
 
@@ -23,6 +25,7 @@ public class User extends AuditModel {
     @Column(unique=true)
     private String username;
     
+    @JsonIgnore
     private String password;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
@@ -33,4 +36,13 @@ public class User extends AuditModel {
     @EqualsAndHashCode.Exclude
     private Set<Vote> votes;
 
+    @JsonIgnore
+    public String getPassword() {
+        return password;
+    }
+
+    @JsonProperty
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
