@@ -3,11 +3,9 @@ import { Modal, Form, Input, Button } from "antd";
 import { useStore } from "store";
 
 export default Form.create({})(({visible: visibleProps, onClose, form}) => {
-    const {state, dispatch} = useStore()
+    const [state, dispatch] = useStore()
 
     const [visible, setVisible] = useState(visibleProps);
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
     const [confirmDirty, setConfirmDirty] = useState(false)
     const [loading, setLoading] = useState(false)
     
@@ -22,6 +20,7 @@ export default Form.create({})(({visible: visibleProps, onClose, form}) => {
                 return
             }
             setLoading(true)
+            const {username, password} = values
 
             fetch("http://localhost:8080/users/sign-up", {
                 method: 'POST',
@@ -31,11 +30,25 @@ export default Form.create({})(({visible: visibleProps, onClose, form}) => {
                 body: JSON.stringify({
                     username, password
                 })
-            }).then((res)=> {
-                return res.json()
-            }).then(data => {
-                console.log(data)
-                onClose()
+            }).then(res => res.json()).then(data => {
+                let user = data
+                fetch("http://localhost:8080/authenticate", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username, password
+                    })  
+                }).then(res => res.json()).then(data => {
+                    let token = data.token
+                    dispatch({type: "LOG_IN", user, token})
+                    form.resetFields()
+                    onClose()
+                }).catch(err=>{
+                    console.log(err);
+                    setLoading(false)
+                })
             }).catch(err=>{
                 console.log(err);
                 setLoading(false)
@@ -81,9 +94,7 @@ export default Form.create({})(({visible: visibleProps, onClose, form}) => {
                             }
                         ]
                     })(
-                        <Input
-                            onChange={(e)=>setUsername(e.target.value)}
-                        />
+                        <Input />
                     )}
                 </Form.Item>
                 <Form.Item label="Password" hasFeedback>
@@ -98,9 +109,7 @@ export default Form.create({})(({visible: visibleProps, onClose, form}) => {
                             }
                         ]
                     })(
-                        <Input.Password
-                            onChange={(e)=>setPassword(e.target.value)}
-                        />
+                        <Input.Password />
                     )} 
                 </Form.Item>
                 <Form.Item label="Confirm Password" hasFeedback>

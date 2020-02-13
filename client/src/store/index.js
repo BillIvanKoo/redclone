@@ -7,7 +7,12 @@ const defaultState = {
 function reducer(state = defaultState, action = {}) {
     switch (action.type) {
         case "LOG_IN":
-            return {...state, user: action.user};
+            const {user, token} = action;
+            localStorage.setItem("redclone_token", token);
+            return {...state, user};
+        case "LOG_OUT":
+            localStorage.removeItem("redclone_token");
+            return {...state, user: null};
         default:
             return state;
     }
@@ -17,8 +22,7 @@ const StoreContext = createContext(null);
 
 
 export const StoreProvider = ({ children }) => {
-    const [state, dispatch] = useReducer(reducer, defaultState);
-    const value = {state, dispatch}
+    const value = useReducer(reducer, defaultState)
 
     return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }

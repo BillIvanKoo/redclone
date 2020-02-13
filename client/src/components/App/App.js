@@ -5,7 +5,7 @@ import { StoreProvider } from 'store';
 
 const { Header, Content } = Layout;
 
-function App() {
+export default () => {
   return (
     <StoreProvider>
       <Layout>
@@ -19,5 +19,3 @@ function App() {
     </StoreProvider>
   );
 }
-
-export default App;
