@@ -4,8 +4,7 @@ import { useStore } from 'store';
 
 const { Title, Text, Paragraph } = Typography
 
-export default ({post: postProps}) => {
-    const [post, setPost] = useState(postProps)
+export default ({post, updatePost: updatePostProps}) => {
     const [state, dispatch] = useStore();
     const [upvoted, setUpvoted] = useState(false);
     const [downvoted, setDownvoted] = useState(false);
@@ -49,7 +48,7 @@ export default ({post: postProps}) => {
     const updatePost = () => {
         fetch(`http://localhost:8080/posts/${post.id}`)
             .then(res => res.json()).then(data=>{
-                setPost(data);
+                updatePostProps(data);
             }).catch(err=>{
                 console.log(err);
             })

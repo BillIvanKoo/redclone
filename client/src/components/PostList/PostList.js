@@ -4,6 +4,10 @@ import PostCard from 'components/PostCard';
 export default () => {
     const [posts, setPosts] = useState([])
 
+    const updatePost = (updatedPost) => {
+        setPosts(posts.map(post => updatedPost.id === post.id ? updatedPost : post))
+    }
+
     useEffect(() => {
         fetch("http://localhost:8080/posts")
         .then(res => res.json()).then(data => {
@@ -17,7 +21,7 @@ export default () => {
     return (
         <div>
             {posts.filter(post=>post.parent == null).map(post => (
-                <PostCard key={post.id} post={post}/>
+                <PostCard key={post.id} post={post} updatePost={updatePost}/>
             ))}
         </div>
     )
