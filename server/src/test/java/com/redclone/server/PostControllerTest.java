@@ -98,6 +98,18 @@ public class PostControllerTest {
     }
 
     @Test
+    public void getPostById() throws Exception {
+        when(postRepository.findById(any(Long.class))).thenReturn(Optional.of(post));
+
+        mockMvc.perform(get("/posts/1")
+            .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk());
+        
+        verify(postRepository, times(1)).findById(eq(1L));
+    }
+
+    @Test
     public void getPostsByUserIdTest() throws Exception {
         Page<Post> posts = new PageImpl<Post>(new ArrayList<>());
         when(postRepository.findByUserId(any(Long.class), any(Pageable.class))).thenReturn(posts);

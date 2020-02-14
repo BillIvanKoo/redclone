@@ -39,6 +39,11 @@ public class PostController{
         return postRepository.findAll(pageable);
     }
 
+    @GetMapping("/{id}")
+    public Post getPostById(@PathVariable(value = "id") Long id) {
+        return postRepository.findById(id).get();
+    }
+
     @GetMapping("/user/{id}")
     public Page<Post> getPostsByUserId(@PathVariable(value = "id") Long id, Pageable pageable) {
         return postRepository.findByUserId(id, pageable);

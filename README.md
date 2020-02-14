@@ -22,17 +22,19 @@ The server will be run at localhost:8080
 |:-:|:-|:-|-|-|-|
 |POST|/users/sign-up|Register a new user||{ username:string, password:string }
 |POST|/authenticate|Login||{ username:string, password:string }|JWT for auth
+|GET|/users/profile|Get user info from token|{ "Authorization": "Bearer " + JWT }||User info
 |GET|/posts|Get page of posts|||Page of posts
+|GET|/posts/:id|Get post based on id|||The post
 |GET|/posts/user/:id|Get posts based on user id|||Page of posts
 |GET|/posts/parent/:id|Get posts (comments) based on parent id (post that is commented)|||Page of posts
-|POST|/posts|Create a post|{ "Authorization": "Bearer " + JWT }|{ "content":string } | the created post
-|POST|/posts/parent/:id|Comment on a post with (parent) id|{ "Authorization": "Bearer " + JWT }|{ "content":string }|the created post (commment)
+|POST|/posts|Create a post|{ "Authorization": "Bearer " + JWT }|{ "content":string }|The created post
+|POST|/posts/parent/:id|Comment on a post with (parent) id|{ "Authorization": "Bearer " + JWT }|{ "content":string }|The created post (commment)
 |PUT|/:id|Update post content|{ "Authorization": "Bearer " + JWT }|{ "content":string }|The updated post
 |DELETE|/:id|Delete post|{ "Authorization": "Bearer " + JWT }|
 |GET|/votes/user/:id|Get votes based on user id|||List of votes
 |GET|/votes/post/:id|Get votes based on post id|||List of votes
-|POST|/votes/post/:id|Vote on a post (based on id)|{ "Authorization": "Bearer " + JWT }|{ "up":boolean }|the created vote
-|PUT|/:id|Edit vote|{ "Authorization": "Bearer " + JWT }|{ "up":boolean }|the edited vote
+|POST|/votes/post/:id|Vote on a post (based on id)|{ "Authorization": "Bearer " + JWT }|{ "up":boolean }|The created vote
+|PUT|/:id|Edit vote|{ "Authorization": "Bearer " + JWT }|{ "up":boolean }|The edited vote
 |DELETE|/:id|Delete vote|{ "Authorization": "Bearer " + JWT }
 
 ### Resources used:
@@ -50,3 +52,4 @@ The server will be run at localhost:8080
   - Using JWT in tests https://stackoverflow.com/questions/45241566/spring-boot-unit-tests-with-jwt-token-security
   - Mockito Captor https://www.javainuse.com/spring/spring-boot-argumentcaptor
 - React Project Structure: https://medium.com/@Charles_Stover/optimal-file-structure-for-react-applications-f3e35ad0a145
+- Redux vs React Context + Hooks: https://www.simplethread.com/cant-replace-redux-with-hooks/

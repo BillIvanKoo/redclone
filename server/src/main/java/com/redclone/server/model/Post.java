@@ -7,6 +7,8 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import org.hibernate.annotations.Formula;
+
 import java.util.Set;
 
 @Data
@@ -38,4 +40,9 @@ public class Post extends AuditModel {
     @JsonIgnoreProperties({"parent"})
     private Post parent;
 
+    @Formula("(select count(*) from post as p where p.parent_id = id)")
+    private int children_count;
+
+    @Formula("(select count(*) from vote as v where v.post_id = id and v.up = true)-(select count(*) from vote as v where v.post_id = id and v.up = false)")
+    private int votes_count;
 }
