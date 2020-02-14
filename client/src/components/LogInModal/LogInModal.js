@@ -37,9 +37,16 @@ export default Form.create({})(({visible: visibleProps, onClose, form}) => {
                     }
                 }).then(res => res.json()).then(data => {
                     let user = data
-                    dispatch({type: "LOG_IN", user, token})
-                    form.resetFields()
-                    onClose()
+                    fetch(`http://localhost:8080/votes/user/${user.id}`)
+                    .then(res => res.json()).then(data=>{
+                        user = {...user, votes:data}
+                        dispatch({type: "LOG_IN", user, token})
+                        form.resetFields()
+                        onClose()
+                    }).catch(err=>{
+                        console.log(err);
+                        setLoading(false)
+                    })
                 }).catch(err=>{
                     console.log(err);
                     setLoading(false)

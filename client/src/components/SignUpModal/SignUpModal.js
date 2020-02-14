@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, Button } from "antd";
+import { Modal, Form, Input } from "antd";
 import { useStore } from "store";
 
 export default Form.create({})(({visible: visibleProps, onClose, form}) => {

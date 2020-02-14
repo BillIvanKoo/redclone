@@ -13,6 +13,8 @@ function reducer(state = defaultState, action = {}) {
         case "LOG_OUT":
             localStorage.removeItem("redclone_token");
             return {...state, user: null};
+        case "UPDATE_USER":
+            return {...state, user: action.user}
         default:
             return state;
     }

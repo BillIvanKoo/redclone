@@ -19,13 +19,25 @@ export default () => {
                 "Content-Type": 'application/json',
                 "Authorization": "Bearer " + token
                 }
-            }).then(res=>res.json()).then(data => {
-                let user = data
-                dispatch({
-                    type: "LOG_IN",
-                    user,
-                    token
-                })
+            }).then(res=>{
+                if (res.status === 401 || res.status === 500){
+                    dispatch({
+                        type: "LOG_OUT"
+                    });
+                    return
+                }
+                return res.json()
+            }).then(data => {
+                if (data){
+                    let user = data
+                    fetch(`http://localhost:8080/votes/user/${user.id}`)
+                    .then(res => res.json()).then(data=>{
+                        user = {...user, votes:data}
+                        dispatch({type: "LOG_IN", user, token})
+                    }).catch(err=>{
+                        console.log(err);
+                    })
+                }
             }).catch(err => {
                 console.log(err);
             })
@@ -43,7 +55,8 @@ export default () => {
             case "logout":
                 dispatch({
                     type: "LOG_OUT"
-                })
+                });
+                break;
             default:
                 break
         }
