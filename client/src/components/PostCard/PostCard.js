@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Typography, Button } from 'antd';
+import { withRouter } from 'react-router-dom';
+import moment from "moment";
+
 import { useStore } from 'store';
 
 const { Title, Text, Paragraph } = Typography
 
-export default ({post, updatePost: updatePostProps}) => {
+export default withRouter(({post, updatePost: updatePostProps, history}) => {
     const [state, dispatch] = useStore();
     const [upvoted, setUpvoted] = useState(false);
     const [downvoted, setDownvoted] = useState(false);
@@ -200,12 +203,13 @@ export default ({post, updatePost: updatePostProps}) => {
                     width: "90%",
                     padding: "12px 24px"
                 }}
+                onClick={()=>{history.push(`/post/${post.id}`)}}
             >
                 <Paragraph
                     style={{
                         marginBottom: 0
                     }}
-                >Posted by: {post.user.username}</Paragraph>
+                >Posted by {post.user.username} {'\u2022'} {moment(post.createdAt).fromNow()}</Paragraph>
                 <Title level={3}
                     style={{
                         marginTop: 0
@@ -217,4 +221,4 @@ export default ({post, updatePost: updatePostProps}) => {
             </Card.Grid>
         </Card>
     )
-}
+})

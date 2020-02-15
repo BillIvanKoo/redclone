@@ -87,7 +87,7 @@ export default () => {
                 <Button
                     style={{
                         position: "absolute",
-                        right: "50px",
+                        right: "5%",
                         top: "50%",
                         transform: "translate(0, -50%)"
                     }}

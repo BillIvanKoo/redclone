@@ -3,10 +3,6 @@ import { Card, Input, Button, Form } from 'antd';
 
 const { TextArea } = Input;
 
-const cardStyle = {
-    margin: "12px 0",
-}
-
 const cardBodyStyle = {
     padding: "12px"
 }
@@ -66,9 +62,7 @@ export default Form.create({})(({ form, createPost }) => {
     return focus ? (
         <div ref={wrapperRef}>
             <Card
-                style={cardStyle}
-                bodyStyle={cardBodyStyle}
-                
+                bodyStyle={cardBodyStyle} 
             >
                 <Form onSubmit={handleSubmit}>
                     <Form.Item
@@ -104,8 +98,7 @@ export default Form.create({})(({ form, createPost }) => {
         </div>
     ) : (
         <Card
-        style={cardStyle}
-        bodyStyle={cardBodyStyle}
+            bodyStyle={cardBodyStyle}
         >
             
             <Input
