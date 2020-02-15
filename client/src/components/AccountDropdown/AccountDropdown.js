@@ -13,7 +13,7 @@ export default () => {
     useEffect(() => {
         let token = localStorage.getItem("redclone_token")
         if (token) {
-            fetch("http://localhost:8080/users/profile", {
+            fetch(`${process.env.REACT_APP_SERVER_URL}/users/profile`, {
                 method: "GET",
                 headers: {
                 "Content-Type": 'application/json',
@@ -30,7 +30,7 @@ export default () => {
             }).then(data => {
                 if (data){
                     let user = data
-                    fetch(`http://localhost:8080/votes/user/${user.id}`)
+                    fetch(`${process.env.REACT_APP_SERVER_URL}/votes/user/${user.id}`)
                     .then(res => res.json()).then(data=>{
                         user = {...user, votes:data}
                         dispatch({type: "LOG_IN", user, token})

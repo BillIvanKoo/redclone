@@ -19,7 +19,7 @@ export default Form.create({})(({visible: visibleProps, onClose, form}) => {
             }
             setLoading(true)
             const {username, password} = values
-            fetch("http://localhost:8080/authenticate", {
+            fetch(`${process.env.REACT_APP_SERVER_URL}/authenticate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -29,7 +29,7 @@ export default Form.create({})(({visible: visibleProps, onClose, form}) => {
                 })  
             }).then(res => res.json()).then(data => {
                 let token = data.token
-                fetch("http://localhost:8080/users/profile", {
+                fetch(`${process.env.REACT_APP_SERVER_URL}/users/profile`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export default Form.create({})(({visible: visibleProps, onClose, form}) => {
                     }
                 }).then(res => res.json()).then(data => {
                     let user = data
-                    fetch(`http://localhost:8080/votes/user/${user.id}`)
+                    fetch(`${process.env.REACT_APP_SERVER_URL}/votes/user/${user.id}`)
                     .then(res => res.json()).then(data=>{
                         user = {...user, votes:data}
                         dispatch({type: "LOG_IN", user, token})

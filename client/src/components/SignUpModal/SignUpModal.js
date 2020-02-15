@@ -22,7 +22,7 @@ export default Form.create({})(({visible: visibleProps, onClose, form}) => {
             setLoading(true)
             const {username, password} = values
 
-            fetch("http://localhost:8080/users/sign-up", {
+            fetch(`${process.env.REACT_APP_SERVER_URL}/users/sign-up`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -32,7 +32,7 @@ export default Form.create({})(({visible: visibleProps, onClose, form}) => {
                 })
             }).then(res => res.json()).then(data => {
                 let user = data
-                fetch("http://localhost:8080/authenticate", {
+                fetch(`${process.env.REACT_APP_SERVER_URL}/authenticate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

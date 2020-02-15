@@ -33,10 +33,10 @@ export default ({post, updatePost: updatePostProps}) => {
         }
     }, [state.user])
 
-    const url = "http://localhost:8080"
+    const url = process.env.REACT_APP_SERVER_URL
 
     const updateUserVotes = () => {
-        fetch(`http://localhost:8080/votes/user/${state.user.id}`)
+        fetch(`${url}/votes/user/${state.user.id}`)
             .then(res => res.json()).then(data=>{
                 let user = {...state.user, votes:data}
                 dispatch({type: "UPDATE_USER", user})
@@ -46,7 +46,7 @@ export default ({post, updatePost: updatePostProps}) => {
     }
 
     const updatePost = () => {
-        fetch(`http://localhost:8080/posts/${post.id}`)
+        fetch(`${url}/posts/${post.id}`)
             .then(res => res.json()).then(data=>{
                 updatePostProps(data);
             }).catch(err=>{
