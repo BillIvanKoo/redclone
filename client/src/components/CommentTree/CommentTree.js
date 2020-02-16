@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Comment, Icon } from 'antd';
+import { Comment } from 'antd';
 import moment from 'moment';
 
 import { useStore } from 'store';
 import AddComment from 'components/AddComment';
+import VotePost from 'components/VotePost';
 
 const CommentTree = ({comment: commentProps, style: styleProps}) => {
     const [state, dispacth] = useStore();
@@ -76,13 +77,9 @@ const CommentTree = ({comment: commentProps, style: styleProps}) => {
 
     const handleActions = () => {
         return showReplyEditor || !state.user ? [
-            <span><Icon type="caret-up" /></span>,
-            <span>{comment.votes_count}</span>,
-            <span><Icon type="caret-down" /></span>,
+            <div><VotePost post={comment} updatePost={setComment}/></div>,
         ] : [
-            <span><Icon type="caret-up" /></span>,
-            <span>{comment.votes_count}</span>,
-            <span><Icon type="caret-down" /></span>,
+            <div><VotePost post={comment} updatePost={setComment}/></div>,
             <span onClick={()=>{setShowReplyEditor(true)}}>Reply to</span>
         ]
     }

@@ -6,6 +6,7 @@ import moment from 'moment';
 import CommentTree from 'components/CommentTree';
 import { useStore } from 'store';
 import AddComment from 'components/AddComment';
+import VotePost from 'components/VotePost';
 
 const { Paragraph, Title } = Typography
 
@@ -36,6 +37,7 @@ export default () => {
             <Card>
                 <Paragraph>{post.user.username} {'\u2022'} {moment(post.createdAt).fromNow()}</Paragraph>
                 <Title level={3}>{post.content}</Title>
+                <VotePost post={post} updatePost={setPost}/>
                 {state.user ? (
                     <AddComment
                         parentId={post.id}

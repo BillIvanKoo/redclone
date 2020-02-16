@@ -18,6 +18,7 @@ export default () => {
             <Header style={{ position: 'fixed', zIndex: 1, width: "100%", padding: "0 5%"}}>
               <Link to="/">
                 <img
+                alt="redclone logo"
                   src={logo}
                   style={{
                     maxHeight: "48px",
