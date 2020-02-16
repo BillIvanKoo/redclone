@@ -4,11 +4,14 @@ import { Card, Typography } from 'antd';
 import moment from 'moment';
 
 import CommentTree from 'components/CommentTree';
+import { useStore } from 'store';
+import AddComment from 'components/AddComment';
 
 const { Paragraph, Title } = Typography
 
 export default () => {
     const { id } = useParams()
+    const [state, dispatch] = useStore();
     const [post, setPost] = useState({})
     const [comments, setComments] = useState([])
 
@@ -33,6 +36,14 @@ export default () => {
             <Card>
                 <Paragraph>{post.user.username} {'\u2022'} {moment(post.createdAt).fromNow()}</Paragraph>
                 <Title level={3}>{post.content}</Title>
+                {state.user ? (
+                    <AddComment
+                        parentId={post.id}
+                        onCommentAdded={comment => {
+                            setComments([...comments, comment])
+                        }}
+                    />
+                ) : null}
             </Card>
         ) : null}
         {comments.map(comment => (

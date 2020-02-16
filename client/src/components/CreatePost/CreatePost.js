@@ -1,28 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, Input, Button, Form } from 'antd';
+import { useOutsideClick } from "hooks";
 
 const { TextArea } = Input;
 
 const cardBodyStyle = {
     padding: "12px"
-}
-
-const useOutsideClick = (ref, callback) => {
-    const handleClick = e => {
-      if (ref.current && !ref.current.contains(e.target)) {
-        callback();
-      }
-    };
-  
-    useEffect(() => {
-        document.addEventListener("click", handleClick);
-    
-        return () => {
-            document.removeEventListener("click", handleClick);
-        };
-    }, []);
-  };
-  
+} 
 
 export default Form.create({})(({ form, createPost }) => {
     const [focus, setFocus] = useState(false);

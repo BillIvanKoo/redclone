@@ -1,9 +1,19 @@
-import React, {useState} from 'react'
-import { Comment } from 'antd';
+import React, { useState, useEffect } from 'react'
+import { Comment, Icon } from 'antd';
 import moment from 'moment';
 
-const CommentTree = ({comment, style: styleProps}) => {
+import { useStore } from 'store';
+import AddComment from 'components/AddComment';
+
+const CommentTree = ({comment: commentProps, style: styleProps}) => {
+    const [state, dispacth] = useStore();
+    const [comment, setComment] = useState(commentProps);
     const [children, setChildren] = useState([])
+    const [showReplyEditor, setShowReplyEditor] = useState(false)
+
+    useEffect(() => {
+        setComment(commentProps)
+    }, [commentProps])
 
     const loadComments = () => {
         fetch(`${process.env.REACT_APP_SERVER_URL}/posts/parent/${comment.id}`)
@@ -14,11 +24,22 @@ const CommentTree = ({comment, style: styleProps}) => {
         })
     }
 
-    const displayLoad = () => {
+    const onCommentAdded = addedComment => {
+        if (children.length > 0 || comment.children_count === 0) {
+            setChildren([...children, addedComment])
+        } else {
+            setComment({
+                ...comment,
+                children_count: comment.children_count + 1
+            })
+        }
+    }
+
+    const handleChildren = () => {
         if (children.length > 0) {
             return children.map(child => <CommentTree comment={child} style={{
                 borderLeftStyle: "solid",
-                margin: "-16px -32px"
+                margin: "-16px 0 0 -32px"
             }}/>)
         } else if (comment.children_count > 0) {
             return (
@@ -26,12 +47,44 @@ const CommentTree = ({comment, style: styleProps}) => {
                     actions={[<span onClick={loadComments}>{comment.children_count + " more repl" + (comment.children_count === 1 ? "y" : "ies")}</span>]}
                     style={{
                         borderLeftStyle: "solid",
-                        margin: "-16px -32px"
+                        margin: "-16px 0 0 -32px"
                     }}
                 />
             )
         }
         return null
+    }
+
+    const handleContent = () => {
+        return showReplyEditor ? (
+            <>
+                {comment.content}
+                <AddComment
+                    onClickOutside={() => {setShowReplyEditor(false)}}
+                    parentId={comment.id}
+                    onCommentAdded={addedComment => {
+                        onCommentAdded(addedComment)
+                    }}
+                />
+            </>
+        ) : (
+            <>
+                {comment.content}
+            </>
+        )
+    }
+
+    const handleActions = () => {
+        return showReplyEditor || !state.user ? [
+            <span><Icon type="caret-up" /></span>,
+            <span>{comment.votes_count}</span>,
+            <span><Icon type="caret-down" /></span>,
+        ] : [
+            <span><Icon type="caret-up" /></span>,
+            <span>{comment.votes_count}</span>,
+            <span><Icon type="caret-down" /></span>,
+            <span onClick={()=>{setShowReplyEditor(true)}}>Reply to</span>
+        ]
     }
 
     return (
@@ -40,12 +93,12 @@ const CommentTree = ({comment, style: styleProps}) => {
                 borderLeftStyle: "solid",
                 margin: "0 2.5%"
             }}
-            actions={[<span>Reply to</span>]}
+            actions={handleActions()}
             author={comment.user.username}
             datetime={moment(comment.createdAt).fromNow()}
-            content={comment.content}
+            content={handleContent()}
         >
-            {displayLoad()}
+            {handleChildren()}
         </Comment>
     )
 }
