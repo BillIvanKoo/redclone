@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, withRouter } from 'react-router-dom';
+import { useParams, withRouter, Link } from 'react-router-dom';
 import { Card, Typography, Button, message } from 'antd';
 import moment from 'moment';
 
@@ -45,7 +45,8 @@ export default withRouter(({history}) => {
         <>
         {post.user ? (
             <Card>
-                <Paragraph>{post.user.username} {'\u2022'} {moment(post.createdAt).fromNow()}</Paragraph>
+                {post.parent ? <Link to={`/post/${post.parent.id}`}>Go to parent..</Link>: null}
+                <Paragraph><Link to={`/profile/${post.user.id}`}>{post.user.username}</Link> {'\u2022'} {moment(post.createdAt).fromNow()}</Paragraph>
                 {editing ? (
                     <EditPost post={post}
                         onClickOutside={()=>{setEditing(false)}}

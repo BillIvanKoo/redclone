@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Icon, Dropdown, Button, Menu } from "antd";
+import { withRouter } from 'react-router-dom';
+
 import SignUpModal from 'components/SignUpModal';
 import LogInModal from 'components/LogInModal';
 import { useStore } from 'store';
 
-export default () => {
+export default withRouter(({ history }) => {
     const [state, dispatch] = useStore();
     const [logInModalVisible, setLogInModalVisible] = useState(false)
     const [signUpModalVisible, setSignUpModalVisible] = useState(false)
@@ -52,13 +54,16 @@ export default () => {
             case "signup":
                 setSignUpModalVisible(true)
                 break;
+            case "profile":
+                history.push(`/profile/${state.user.id}`)
+                break;
             case "logout":
                 dispatch({
                     type: "LOG_OUT"
                 });
                 break;
             default:
-                break
+                break;
         }
     }
 
@@ -101,4 +106,4 @@ export default () => {
             <SignUpModal visible={signUpModalVisible} onClose={()=>{setSignUpModalVisible(false)}}/>   
         </>
     )
-}
+})

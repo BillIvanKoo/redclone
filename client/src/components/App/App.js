@@ -7,6 +7,7 @@ import { StoreProvider } from 'store';
 import PostList from 'components/PostList';
 import PostPage from 'components/PostPage';
 import logo from "assets/images/logo.png";
+import ProfilePage from 'components/ProfilePage/ProfilePage';
 
 const { Header, Content } = Layout;
 
@@ -34,7 +35,7 @@ export default () => {
               <Switch>
                 <Route exact path="/" component={PostList} />
                 <Route path="/post/:id" component={PostPage} />
-                <Route path="/profile/:id" />
+                <Route path="/profile/:id" component={ProfilePage}/>
               </Switch>
             </Content>
         </Layout>
