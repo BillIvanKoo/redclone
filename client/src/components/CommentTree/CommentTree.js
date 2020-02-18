@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { Comment, Button, Popconfirm } from 'antd';
+import { Comment, Button } from 'antd';
 import moment from 'moment';
 
 import { useStore } from 'store';
 import AddComment from 'components/AddComment';
 import VotePost from 'components/VotePost';
 import EditPost from 'components/EditPost';
+import DeletePost from 'components/DeletePost';
 
-const CommentTree = ({comment: commentProps, style: styleProps}) => {
+const CommentTree = ({comment: commentProps, style: styleProps, onDelete}) => {
     const [state, dispacth] = useStore();
     const [comment, setComment] = useState(commentProps);
     const [children, setChildren] = useState([])
@@ -30,20 +31,34 @@ const CommentTree = ({comment: commentProps, style: styleProps}) => {
     const onCommentAdded = addedComment => {
         if (children.length > 0 || comment.children_count === 0) {
             setChildren([...children, addedComment])
-        } else {
-            setComment({
-                ...comment,
-                children_count: comment.children_count + 1
-            })
         }
+        setComment({
+            ...comment,
+            children_count: comment.children_count + 1
+        })
+    }
+
+    const handleChildDelete = deletedChild => {
+        setChildren(children.filter(child => deletedChild.id !== child.id));
+        setComment({
+            ...comment,
+            children_count: comment.children_count - 1
+        })
     }
 
     const handleChildren = () => {
         if (children.length > 0) {
-            return children.map(child => <CommentTree key={child.id} comment={child} style={{
-                borderLeftStyle: "solid",
-                margin: "-16px 0 0 -32px"
-            }}/>)
+            return children.map(child => (
+                <CommentTree
+                    key={child.id}
+                    comment={child}
+                    onDelete={()=>{handleChildDelete(child)}}
+                    style={{
+                        borderLeftStyle: "solid",
+                        margin: "-16px 0 0 -32px"
+                    }}
+                />
+            ))
         } else if (comment.children_count > 0) {
             return (
                 <Comment
@@ -94,12 +109,12 @@ const CommentTree = ({comment: commentProps, style: styleProps}) => {
                 actions.push(
                     <Button.Group>
                         <Button icon="edit" onClick={()=>{setEditing(true)}}/>
-                        <Popconfirm
-                            title="Are you sure to delete this post?"
-                            placement="bottomRight"
-                        >
-                            <Button icon="delete"/>
-                        </Popconfirm>
+                        <DeletePost
+                            postId={comment.id}
+                            callback={onDelete}
+                            type="comment"
+                            placement="top"
+                        />
                     </Button.Group>
                 )
             }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, withRouter } from 'react-router-dom';
-import { Card, Typography, Button, message, Popconfirm } from 'antd';
+import { Card, Typography, Button, message } from 'antd';
 import moment from 'moment';
 
 import CommentTree from 'components/CommentTree';
@@ -8,6 +8,7 @@ import { useStore } from 'store';
 import AddComment from 'components/AddComment';
 import VotePost from 'components/VotePost';
 import EditPost from 'components/EditPost';
+import DeletePost from 'components/DeletePost';
 
 const { Paragraph, Title } = Typography
 
@@ -36,22 +37,8 @@ export default withRouter(({history}) => {
         })
     }, [id])
 
-    
-    const token = localStorage.getItem("redclone_token")
-
-    const handleDelete = () => {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/posts/${post.id}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }).then(res => {
-            message.info("Post has been deleted!").then(()=>{
-                history.push("/")
-            })
-        }).catch(err => {
-            console.log(err);
-        })
+    const handleCommentDelete = deletedComment => {
+        setComments(comments.filter(comment => comment.id !== deletedComment.id))
     }
 
     return (
@@ -77,13 +64,14 @@ export default withRouter(({history}) => {
                             }}
                         >
                             <Button icon="edit" onClick={() => {setEditing(true)}}/>
-                            <Popconfirm
-                                title="Are you sure to delete this post?"
-                                placement="bottomRight"
-                                onConfirm={handleDelete}
-                            >
-                                <Button icon="delete"/>
-                            </Popconfirm>
+                            <DeletePost
+                                postId={post.id}
+                                callback={()=>{
+                                    message.info("Post has been deleted!").then(()=>{
+                                        history.push("/")
+                                    })
+                                }}
+                            />
                         </Button.Group>
                     ) : null}
                     <AddComment
@@ -97,7 +85,7 @@ export default withRouter(({history}) => {
             </Card>
         ) : null}
         {comments.map(comment => (
-            <CommentTree key={comment.id} comment={comment} />
+            <CommentTree key={comment.id} comment={comment} onDelete={()=>{handleCommentDelete(comment)}}/>
         ))}
         </>
     )
