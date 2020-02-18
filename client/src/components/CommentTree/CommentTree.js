@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { Comment } from 'antd';
+import { Comment, Button, Popconfirm } from 'antd';
 import moment from 'moment';
 
 import { useStore } from 'store';
 import AddComment from 'components/AddComment';
 import VotePost from 'components/VotePost';
+import EditPost from 'components/EditPost';
 
 const CommentTree = ({comment: commentProps, style: styleProps}) => {
     const [state, dispacth] = useStore();
     const [comment, setComment] = useState(commentProps);
     const [children, setChildren] = useState([])
+    const [editing, setEditing] = useState(false);
     const [showReplyEditor, setShowReplyEditor] = useState(false)
 
     useEffect(() => {
@@ -38,7 +40,7 @@ const CommentTree = ({comment: commentProps, style: styleProps}) => {
 
     const handleChildren = () => {
         if (children.length > 0) {
-            return children.map(child => <CommentTree comment={child} style={{
+            return children.map(child => <CommentTree key={child.id} comment={child} style={{
                 borderLeftStyle: "solid",
                 margin: "-16px 0 0 -32px"
             }}/>)
@@ -68,6 +70,15 @@ const CommentTree = ({comment: commentProps, style: styleProps}) => {
                     }}
                 />
             </>
+        ) : editing ? (
+            <>
+                <EditPost
+                    type="comment"
+                    post={comment}
+                    onClickOutside={()=>{setEditing(false)}}
+                    onPostUpdate={post=>{setComment(post);setEditing(false)}}
+                />
+            </>
         ) : (
             <>
                 {comment.content}
@@ -76,12 +87,24 @@ const CommentTree = ({comment: commentProps, style: styleProps}) => {
     }
 
     const handleActions = () => {
-        return showReplyEditor || !state.user ? [
-            <div><VotePost post={comment} updatePost={setComment}/></div>,
-        ] : [
-            <div><VotePost post={comment} updatePost={setComment}/></div>,
-            <span onClick={()=>{setShowReplyEditor(true)}}>Reply to</span>
-        ]
+        let actions = [<div><VotePost post={comment} updatePost={setComment}/></div>];
+        if (!showReplyEditor && state.user) {
+            actions.push(<span onClick={()=>{setShowReplyEditor(true)}}>Reply to</span>)
+            if (state.user.id === comment.user.id){
+                actions.push(
+                    <Button.Group>
+                        <Button icon="edit" onClick={()=>{setEditing(true)}}/>
+                        <Popconfirm
+                            title="Are you sure to delete this post?"
+                            placement="bottomRight"
+                        >
+                            <Button icon="delete"/>
+                        </Popconfirm>
+                    </Button.Group>
+                )
+            }
+        }
+        return actions
     }
 
     return (

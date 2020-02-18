@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, withRouter } from 'react-router-dom';
-import { Card, Typography, Button, message, Form, Popconfirm } from 'antd';
+import { Card, Typography, Button, message, Popconfirm } from 'antd';
 import moment from 'moment';
 
 import CommentTree from 'components/CommentTree';
 import { useStore } from 'store';
 import AddComment from 'components/AddComment';
 import VotePost from 'components/VotePost';
-import TextArea from 'antd/lib/input/TextArea';
-import { useOutsideClick } from 'hooks';
+import EditPost from 'components/EditPost';
 
 const { Paragraph, Title } = Typography
 
@@ -18,8 +17,6 @@ export default withRouter(({history}) => {
     const [post, setPost] = useState({});
     const [comments, setComments] = useState([]);
     const [editing, setEditing] = useState(false);
-    const [content, setContent] = useState("");
-    const editRef = useRef(null)
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_SERVER_URL}/posts/${id}`)
@@ -28,7 +25,6 @@ export default withRouter(({history}) => {
                 history.push("/")
             }
             setPost(data)
-            setContent(data.content)
         }).catch(err => {
             console.log(err);
         })
@@ -40,35 +36,8 @@ export default withRouter(({history}) => {
         })
     }, [id])
 
-    useOutsideClick(editRef, () => {
-        setEditing(false)
-    })
-
     
     const token = localStorage.getItem("redclone_token")
-
-    const handleEditSubmit = () => {
-        if (content.length > 0) {
-            fetch(`${process.env.REACT_APP_SERVER_URL}/posts/${post.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + token
-                },
-                body: JSON.stringify({
-                    content
-                })
-            }).then(res => res.json()).then(data=>{
-                setPost(data);
-                setContent(data.content);
-                setEditing(false);
-            }).catch(err=>{
-                console.log(err);
-            })
-        } else {
-            message.error("Post cannot be empty!");
-        }
-    }
 
     const handleDelete = () => {
         fetch(`${process.env.REACT_APP_SERVER_URL}/posts/${post.id}`, {
@@ -91,14 +60,10 @@ export default withRouter(({history}) => {
             <Card>
                 <Paragraph>{post.user.username} {'\u2022'} {moment(post.createdAt).fromNow()}</Paragraph>
                 {editing ? (
-                    <div ref={editRef}>
-                        <Form.Item>
-                            <TextArea value={content} onChange={e => {setContent(e.target.value)}}/>
-                        </Form.Item>
-                        <Form.Item>
-                            <Button type="primary" onClick={handleEditSubmit}>Submit</Button>
-                        </Form.Item>
-                    </div>
+                    <EditPost post={post}
+                        onClickOutside={()=>{setEditing(false)}}
+                        onPostUpdate={post=>{setPost(post);setEditing(false)}}
+                    />
                 ) : (
                     <Title level={3}>{post.content}</Title>
                 )}
@@ -132,7 +97,7 @@ export default withRouter(({history}) => {
             </Card>
         ) : null}
         {comments.map(comment => (
-            <CommentTree comment={comment} />
+            <CommentTree key={comment.id} comment={comment} />
         ))}
         </>
     )
