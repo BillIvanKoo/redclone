@@ -17,6 +17,13 @@ mvn spring-boot:run
 ```
 The server will be run at localhost:8080
 
+### How to run front-end
+```bash
+cd client/
+yarn add
+yarn start
+```
+
 ### API
 |Http Method|Route|Description|Header|Body|Response|
 |:-:|:-|:-|-|-|-|

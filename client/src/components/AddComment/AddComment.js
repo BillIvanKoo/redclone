@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Form, Button, Input } from'antd';
+import { Form, Button, Input, message } from'antd';
 
 import { useOutsideClick } from 'hooks';
 
@@ -31,15 +31,25 @@ export default ({ onClickOutside, parentId, onCommentAdded }) => {
             }).catch(err => {
                 console.log(err);
             })
+        } else {
+            message.error("Comment cannot be empty!");
         }
     }
 
     return (
         <div ref={editorRef}>
-            <Form.Item>
+            <Form.Item
+                style={{
+                    marginTop: "24px"
+                }}
+            >
                 <TextArea value={content} onChange={e=>{setContent(e.target.value)}}/>
             </Form.Item>
-            <Form.Item>
+            <Form.Item
+                style={{
+                    marginBottom: 0
+                }}
+            >
                 <Button onClick={addComment}>
                     Add Comment
                 </Button>
