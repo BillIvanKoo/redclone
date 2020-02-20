@@ -1,27 +1,33 @@
-# redclone
+# Redclone
 Reddit's clone
 
 ### Purpose of this project:
-- to learn java with spring boot:
-  - authentication/authorisation using jwt.
+- to learn spring boot:
+  - authentication/authorisation using jwt
   - mySQL
   - hibernate/JPA
-  - testing using junit.
-- to learn react hooks.
+  - testing using junit
+- to learn react hooks
 
-### How to run back-end
+## Check it out at: http://redclone.site
+- Back-end is hosted with AWS EC2 and RDS
+(spring application.properties for production is not committed to github for obvious reasons)
+- Front-end is hosted with AWS S3 and Cloudflare CDN
+
+### How to run back-end locally
 ```bash
 cd server/
 mvn install
 mvn spring-boot:run
+# The server will be run at localhost:8080
 ```
-The server will be run at localhost:8080
 
-### How to run front-end
+### How to run front-end locally
 ```bash
 cd client/
 yarn add
 yarn start
+# the client will be run at localhost:3000
 ```
 
 ### API
@@ -60,3 +66,4 @@ yarn start
   - Mockito Captor https://www.javainuse.com/spring/spring-boot-argumentcaptor
 - React Project Structure: https://medium.com/@Charles_Stover/optimal-file-structure-for-react-applications-f3e35ad0a145
 - Redux vs React Context + Hooks: https://www.simplethread.com/cant-replace-redux-with-hooks/
+- And many more that I might have forgotten to include...
