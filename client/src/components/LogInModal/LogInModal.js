@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Icon, Input } from 'antd';
+import { Modal, Form, Icon, Input, message } from 'antd';
 import { useStore } from 'store';
 
 export default Form.create({})(({visible: visibleProps, onClose, form}) => {
@@ -29,28 +29,34 @@ export default Form.create({})(({visible: visibleProps, onClose, form}) => {
                 })  
             }).then(res => res.json()).then(data => {
                 let token = data.token
-                fetch(`${process.env.REACT_APP_SERVER_URL}/users/profile`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        "Authorization": "Bearer " + token
-                    }
-                }).then(res => res.json()).then(data => {
-                    let user = data
-                    fetch(`${process.env.REACT_APP_SERVER_URL}/votes/user/${user.id}`)
-                    .then(res => res.json()).then(data=>{
-                        user = {...user, votes:data}
-                        dispatch({type: "LOG_IN", user, token})
-                        form.resetFields()
-                        onClose()
+                if (data.status === 401) {
+                    message.error("Wrong username or password!")
+                    setLoading(false)
+                } else {
+                    fetch(`${process.env.REACT_APP_SERVER_URL}/users/profile`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            "Authorization": "Bearer " + token
+                        }
+                    }).then(res => res.json()).then(data => {    
+                        let user = data
+                        fetch(`${process.env.REACT_APP_SERVER_URL}/votes/user/${user.id}`)
+                        .then(res => res.json()).then(data=>{
+                            user = {...user, votes:data}
+                            dispatch({type: "LOG_IN", user, token})
+                            form.resetFields();
+                            setLoading(false);
+                            onClose();
+                        }).catch(err=>{
+                            console.log(err);
+                            setLoading(false)
+                        })
                     }).catch(err=>{
                         console.log(err);
                         setLoading(false)
                     })
-                }).catch(err=>{
-                    console.log(err);
-                    setLoading(false)
-                })
+                }
             }).catch(err=>{
                 console.log(err);
                 setLoading(false)
